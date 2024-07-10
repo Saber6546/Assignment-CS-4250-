@@ -16,17 +16,3 @@ To run the program, execute the following command:
 python indexing.py
 
 
-###Output
-Document 1:
-love: 0.135
-cat: 0.270
-
-Document 2:
-loves: 0.366
-dog: 0.135
-
-Document 3:
-love: 0.101
-their: 0.275
-dog: 0.101
-cat: 0.101
