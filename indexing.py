@@ -5,7 +5,7 @@
 # preprocesses the documents by removing stopwords and applying stemming,
 # computes the tf-idf matrix, and prints the tf-idf values for each term in each document.
 # FOR: CS 4250- Assignment #1
-# TIME SPENT: 4 hours 
+# TIME SPENT: 5 hours 
 #-----------------------------------------------------------*/
 
 import csv
@@ -14,13 +14,13 @@ from collections import defaultdict
 
 # Reading data from CSV file
 documents = []
-with open('D:/Python/CS 4250/collection.csv', 'r') as csvfile:
+with open('D:/Python/CS 4250/collection.csv', 'r', newline='', encoding='utf-8') as csvfile:
     reader = csv.reader(csvfile)
     for i, row in enumerate(reader):
         if i > 0:  # skipping the header
             documents.append(row[0])
 
-# Stopwords and stemming (simplified)
+# Stopwords and stemming
 stopWords = {'i', 'you', 'he', 'she', 'it', 'we', 'they', 'and', 'or', 'but'}
 stemming = {'cats': 'cat', 'dogs': 'dog'}  # Simplified stemming example
 
@@ -31,38 +31,40 @@ def preprocess(document):
     return words
 
 # Identify index terms
-terms = set()
-for doc in documents:
-    terms.update(preprocess(doc))
-
-terms = sorted(terms)  # Sorting terms alphabetically
+terms = sorted(set().union(*[preprocess(doc) for doc in documents]))  # Sorting terms alphabetically
 
 # Build document-term matrix
 docTermMatrix = []
-tf_matrix = []
 
 # Compute term frequencies (tf) for each document
+tf_matrix = []
 for doc in documents:
     words = preprocess(doc)
     tf_vector = defaultdict(float)
-    for term in words:
-        tf_vector[term] += 1 / len(words)
+    total_words = len(words)
+    for term in terms:
+        tf_vector[term] = words.count(term) / total_words
     tf_matrix.append(tf_vector)
 
 # Compute inverse document frequency (idf)
 idf_vector = {}
+N = len(documents)
 for term in terms:
     df = sum(1 for doc in documents if term in preprocess(doc))
-    idf_vector[term] = math.log(len(documents) / df)
+    idf_vector[term] = math.log(N / df)
 
 # Compute tf-idf matrix
+docTermMatrix = []
 for tf_vector in tf_matrix:
     tfidf_vector = {term: tf * idf_vector[term] for term, tf in tf_vector.items()}
     docTermMatrix.append(tfidf_vector)
 
-# Print the document-term matrix
+# Print the document-term matrix in the desired format
+# Print header
+header = ['Document'] + terms
+print(f"{'Document':<12} {'cat':<10} {'dog':<10} {'love':<10} {'loves':<10}")
 for i, vector in enumerate(docTermMatrix):
-    print(f"Document {i + 1}:")
-    for term, tfidf in vector.items():
-        print(f"{term}: {tfidf:.3f}")
-    print()
+    row = [f"Document {i + 1}"]
+    row += [f"{vector.get(term, 0):.4f}" for term in terms]
+    print(f"{row[0]:<12} {row[1]:<10} {row[2]:<10} {row[3]:<10} {row[4]:<10}")
+
