@@ -5,7 +5,7 @@
 # preprocesses the documents by removing stopwords and applying stemming,
 # computes the tf-idf matrix, and prints the tf-idf values for each term in each document.
 # FOR: CS 4250- Assignment #1
-# TIME SPENT: 24 hours
+# TIME SPENT: 8 hours 
 #-----------------------------------------------------------*/
 
 import csv
@@ -21,8 +21,8 @@ with open('D:/Python/CS 4250/collection.csv', 'r', newline='', encoding='utf-8')
             documents.append(row[0])
 
 # Stopwords and stemming
-stopWords = {'i', 'you', 'he', 'she', 'it', 'we', 'they', 'and', 'or', 'but'}
-stemming = {'cats': 'cat', 'dogs': 'dog'}  # Simplified stemming example
+stopWords = {'i', 'you', 'he', 'she', 'it', 'we', 'they', 'and', 'or', 'but', 'her'}
+stemming = {'cats': 'cat', 'dogs': 'dog', 'loves': 'love'}  # Simplified stemming example
 
 # Function to preprocess a document
 def preprocess(document):
@@ -51,7 +51,7 @@ idf_vector = {}
 N = len(documents)
 for term in terms:
     df = sum(1 for doc in documents if term in preprocess(doc))
-    idf_vector[term] = math.log(N / df)
+    idf_vector[term] = math.log(N / (df + 1))  # Using (df + 1) to avoid division by zero
 
 # Compute tf-idf matrix
 docTermMatrix = []
@@ -60,11 +60,16 @@ for tf_vector in tf_matrix:
     docTermMatrix.append(tfidf_vector)
 
 # Print the document-term matrix in the desired format
-# Print header
-header = ['Document'] + terms
-print(f"{'Document':<12} {'cat':<10} {'dog':<10} {'love':<10} {'loves':<10}")
+# Print header with extended border line
+print('-' * 67)
+print(f"| {'Document':<12} | {'cat':<10} | {'dog':<10} | {'love':<10} | {'loves':<10} |")
+print('-' * 67)
+
+# Print each document row with extended border line
 for i, vector in enumerate(docTermMatrix):
     row = [f"Document {i + 1}"]
     row += [f"{vector.get(term, 0):.4f}" for term in terms]
-    print(f"{row[0]:<12} {row[1]:<10} {row[2]:<10} {row[3]:<10} {row[4]:<10}")
+    print(f"| {row[0]:<12} | {row[1]:<10} | {row[2]:<10} | {row[3]:<10} | {row[4]:<10} |")
+    print('-' * 67)
+
 
