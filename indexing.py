@@ -5,7 +5,7 @@
 # preprocesses the documents by removing stopwords and applying stemming,
 # computes the tf-idf matrix, and prints the tf-idf values for each term in each document.
 # FOR: CS 4250- Assignment #1
-# TIME SPENT: 5 hours 
+# TIME SPENT: 8 hours 
 #-----------------------------------------------------------*/
 
 import csv
